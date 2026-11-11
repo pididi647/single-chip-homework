@@ -1,1 +1,20 @@
 
+; Exp5-1: Data Block Transfer Subroutine
+; Function: copy R3 bytes from source block (start addr in R2) to dest block (start addr in R4)
+; Usage: before running, set in debugger: R2=20H (source), R4=40H (dest), R3=10H (count)
+        ORG     00H
+        LJMP    START
+        ORG     30H
+START:  MOV     A,R2            ; source address -> A
+        MOV     R0,A            ; -> R0 (only R0/R1 can indirect-address internal RAM)
+        MOV     A,R4            ; dest address -> A
+        MOV     R1,A            ; -> R1
+        MOV     A,R3            ; byte count -> A
+        MOV     R2,A            ; -> R2 (loop counter)
+LOOP:   MOV     A,@R0           ; load source byte into A
+        MOV     @R1,A           ; store to dest (must go through A)
+        INC     R0              ; next source byte
+        INC     R1              ; next dest byte
+        DJNZ    R2,LOOP         ; continue until R3 bytes copied
+        SJMP    $               ; halt
+        END
